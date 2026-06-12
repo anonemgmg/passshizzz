@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f0f0f0; margin: 0; padding: 20px; }
+        .widget { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { margin: 0; font-size: 24px; color: #333; }
+        p { margin: 5px 0 0 0; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="widget">
+        <h2 id="clock">00:00:00</h2>
+        <p>現在の時刻</p>
+    </div>
+
+    <div class="widget">
+        <h2 id="battery">-%</h2>
+        <p>バッテリー残量</p>
+    </div>
+
+    <script>
+        // 時計の処理
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toTimeString().split(' ')[0];
+            document.getElementById('clock').innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // バッテリーの処理（PWA/ブラウザ用）
+        if (navigator.getBattery) {
+            navigator.getBattery().then(function(battery) {
+                function updateBattery() {
+                    document.getElementById('battery').innerText = Math.floor(battery.level * 100) + "%";
+                }
+                updateBattery();
+                battery.addEventListener('levelchange', updateBattery);
+            });
+        } else {
+            document.getElementById('battery').innerText = "非対応の端末";
+        }
+    </script>
+</body>
+</html>
